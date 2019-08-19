@@ -1,0 +1,52 @@
+
+{% extends 'goodmenubase.html' %}
+
+
+{% block title %}album_detail.html{% endblock %}
+{% load staticfiles %}
+{% block contents %}
+<h1>{{object}} 자세히 보기 입니다.</h1>
+
+
+<div class="row">
+    {% for goodmenu in object.goodmenu_set.all %}
+    <div class="d-flex flex-column flex-md-row align-items-center pt-3  bg-white">
+            <h4 class="my-0 mr-md-auto font-weight-normal"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67690951_2331068593780906_5764189657076072448_n.jpg?_nc_cat=102&_nc_eui2=AeG_D0nCF8NOxCd4OL3FwrBcVHAHjv0Y21ryeeAPTgaQUQFOCSIpKGpu1efhOkzC6iztbG2_oFd3Yityja_zNk9n52Xeau5dnfQw8-lJwjlBcw&_nc_oc=AQlUewcQLDJMpc0VjaLpci9HggYw7rNOHituRjlpjEn-UTXDotssofQt6SVY7HA1LHU&_nc_ht=scontent-icn1-1.xx&oh=68cce658ba3ad390f744d045ecdb4154&oe=5DA2224E" height="25">  {{usermenualbum.name}}</h4>
+        </div>
+    <div class="card"  style="margin: 1%; width: 23%;left:3% " >
+
+        <div class="card-header">
+            <h3 class="text-info">{{ goodmenu.title}}</h3>
+           
+        </div>
+        <a href="{% url 'goodmenu:goodmenu_detail' goodmenu.id %}" class="card-link"><img class ="thumbnail" src="{{goodmenu.smallimg.thumb_url }}" width="100%"></a>
+        <div class="p-0 card-body">
+            <p class="card-text">{{ goodmenu.smallbody }}  </p>
+        </div>
+        <ul class="list-group list-group-flush">
+                <li>
+                    <a href="{% url 'goodmenu:like' goodmenu.id %}" class="float-left btn-like {%if user in goodmenu.like.all %} active {%endif%}">좋아요!</a>
+                    {% if goodmenu.like.all.count %}
+                    <span class = "float-left">
+                        {{goodmenu.like.all.count}}
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'goodmenu:favorite' goodmenu.id %}" class="float-right btn-favorite {%if user in goodmenu.favorite.all %}active{%endif%}">저장하기!</a>
+                    
+                    </li>
+
+            <li class="list-group-item">
+                <small class="text-muted" style="float: left"><img src=" {{ goodmenu.goodstar.img.url }}" ></small>
+                <small class="text-muted" style="float: right"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67786290_2330946857126413_7937039867257552896_n.jpg?_nc_cat=104&_nc_oc=AQn-7TMkZg0I2NZCpvvA8J4CIzuD8PeSXIOftSsY8UyTNRX1IMrZByj_jHZ-mCfJ0Q0&_nc_ht=scontent-icn1-1.xx&oh=944d5969894ff020a2876c76779cfbc8&oe=5DDECB39" width="10">{{ goodmenu.hit }}</small> 
+            </li>
+        </ul>
+        
+
+    </div>
+{% endfor %}
+
+</div>
+ 
+{% endblock%}
+
+

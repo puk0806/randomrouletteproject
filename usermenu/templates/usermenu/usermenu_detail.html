@@ -1,0 +1,114 @@
+
+{% extends 'goodmenubase.html' %}
+
+{% block contents %}
+<h1 style="display: none">{{usermenu.update_counter}}</h1>
+<div class="d-flex flex-column flex-md-row align-items-center pt-5 px-md-4 bg-white">
+    <h1 class="my-0 mr-md-auto font-weight-normal"><strong>{{usermenu.title}}<img src="{{ usermenu.userstar.img.url }}"></strong></h1>
+    <p>
+      <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=ea74dc8d96386e3d0e27a43038f1c5e1&oe=5DCE11CA" width="17" height="17">{{usermenu.like.all.count}}
+      <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67786290_2330946857126413_7937039867257552896_n.jpg?_nc_cat=104&_nc_oc=AQn-7TMkZg0I2NZCpvvA8J4CIzuD8PeSXIOftSsY8UyTNRX1IMrZByj_jHZ-mCfJ0Q0&_nc_ht=scontent-icn1-1.xx&oh=944d5969894ff020a2876c76779cfbc8&oe=5DDECB39" width="25" height="17">{{ usermenu.hit }}
+    </p>
+</div>
+<div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+    <p class="my-0 mr-md-auto font-weight-normal"><small>{{ usermenu.smallbody }}</small></p>
+    <p class="text-right my-0 font-weight-normal"><small>작성자 : {{ usermenu.userauthor }}</small></p>
+</div>
+<div class="pb-5 px-md-4 text-right">
+    <p><small>게시일 : {{ usermenu.date }}</small></p>
+</div>
+<div class="d-flex flex-column flex-md-row align-items-center p-5 px-md-4 bg-white">    
+    <img src="{{usermenu.smallimg.url}}" height="300">
+</div>
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>소개</strong></h6>
+    <p>{{ usermenu.body }}</p>  
+</div>
+
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>주소</strong></h6>
+    <p>{{ usermenu.userarea }}</p>
+</div>
+
+<div class="pt-5 pb-1 px-md-4 text-left">
+    <h3 class="my-0 mr-md-auto pb-2"><strong>댓글</strong></h3>
+</div>
+
+
+<form>
+    
+  </form>
+
+                {% if user.is_active %}
+                <form action="{% url 'usermenu:detail' usermenu.id %}" method="POST" enctype='multipart/form-data'>
+                  {% csrf_token %}
+                  <div class="pt-5 pb-1 px-md-4 text-left">
+                      <h6 class="my-0 mr-md-auto pb-2"><strong>별점</strong></h6>
+                      {{usercomment_form.userstarcomment}}
+                  </div>
+                 
+                  <div class="pt-5 pb-1 px-md-4 text-left">
+                      <h6 class="my-0 mr-md-auto pb-2"><strong>타이틀</strong></h6>
+                      {{usercomment_form.title}}
+                  </div>
+                  
+                  <div class="pt-5 pb-1 px-md-4 text-left">
+                      <h6 class="my-0 mr-md-auto pb-2"><strong>내용</strong></h6>
+                      {{usercomment_form.body}}
+                  </div>
+                  <div class="pt-5 pb-1 px-md-4 text-left">
+                      <input type="submit" value="Upload" class="btn btn-primary">
+                  </div>
+              </form>
+                {% endif %}
+          
+
+
+
+
+    <table class="table">
+        <!--
+        <thead>
+          <tr>
+            <th scope="col">작성자</th>
+            <th scope="col">제목</th>
+            <th scope="col">내용</th>
+            <th scope="col">작성일자</th>
+            <th scope="col">수정</th>
+          </tr>
+          
+        </thead>
+        -->
+
+        {% for comment in usercomments %}
+        <tbody>
+          <th scope="row">
+            <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67842302_2331020193785746_5113078967259103232_n.jpg?_nc_cat=100&_nc_eui2=AeFfKozC6VP5EVW-Z94ty2lIwhaQKrJ0fDsXbUt-fXdsNjbILTDPGa7ZKCf-z-S9kKL9EIJqJNsMqSHPpYvJsqzPOTO4spEuFfSsWoicu3_CLA&_nc_oc=AQm0LmtahoIn0EAdGbxBurv-T4IZT9wRUIugHYlKsmVmfPlSww9OibRCCRhmfSmY9p4&_nc_ht=scontent-icn1-1.xx&oh=d62029588ad64f1d4c2b4f67d9896a82&oe=5DD6EEBD" height="50">
+          </th>
+            <!--
+            <td>{{ comment.title }}</td>
+            -->
+          <td>
+            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+              <p class="my-0 mr-md-auto font-weight-normal"><strong>{{ comment.userauthorcomment }}</strong></p>
+            </div>
+            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+              <p class="my-0 mr-md-auto font-weight-normal"><small><img src="{{ comment.userstarcomment.img.url }}"></small></p>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+              <p class="my-0 mr-md-auto font-weight-normal">{{ comment.body }}</p>
+            </div>
+          </td>
+            <td>{{ comment.date }}</td>
+            <td>
+            <a href="{% url 'goodmenu:commentupdate' comment.id %}" >수정하기</a>
+            <a href="{% url 'goodmenu:commentdelete' comment.id %}" >삭제하기</a>
+            </td>
+            
+          </tr>
+        </tbody>
+        {% endfor %}
+      </table>
+{% endblock%}

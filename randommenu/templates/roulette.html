@@ -1,0 +1,490 @@
+
+
+   <!doctype html>
+   <html lang="en">
+     <head>
+       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+   
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+       <meta name="description" content="">
+       <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+       <meta name="generator" content="Jekyll v3.8.5">
+   
+       <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/cover/">
+   
+       <!-- Bootstrap core CSS -->
+   <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   
+   <meta content="IE=EmulateIE7" http-equiv=X-UA-Compatible />
+   <title>지니야 오늘은 뭐 먹지?</title>
+   <link href=https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css rel=stylesheet type=text/css>
+   <script type=text/javascript src=https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js></script>
+   <script type=text/javascript src=jquery.tinysort.min.js></script>
+   <!--[if IE]><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jit/2.0.2/Extras/excanvas.min.js"></script><![endif]-->
+   <script type=text/javascript>
+   // Helpers
+      shuffle = function(o) {
+         for ( var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x)
+            ;
+         return o;
+      };
+   
+      String.prototype.hashCode = function(){
+         // See http://www.cse.yorku.ca/~oz/hash.html      
+         var hash = 5381;
+         for (i = 0; i < this.length; i++) {
+            char = this.charCodeAt(i);
+            hash = ((hash<<5)+hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+         }
+         return hash;
+      }
+   
+      Number.prototype.mod = function(n) {
+         return ((this%n)+n)%n;
+      }
+   </script>
+   <script type=text/javascript>
+   venues = {
+         "116208"  : "한식",
+         "66271"   : "중식",
+         "5518"    : "일식",
+           "392360"  : "양식",
+           "41457"   : "패스트푸드",
+         "2210952" : "디저트",
+         "207306"  : "음료",      
+      };
+   
+      $(function() {
+   
+         var venueContainer = $('#venues ul');
+         $.each(venues, function(key, item) {
+            venueContainer.append(
+                 $(document.createElement("li"))
+                 .append(
+                      $(document.createElement("input")).attr({
+                            id:    'venue-' + key
+                           ,name:  item
+                           ,value: item
+                           ,type:  'checkbox'
+                           ,checked:true
+                      })
+                      .change( function() {
+                         var cbox = $(this)[0];
+                         var segments = wheel.segments;
+                         var i = segments.indexOf(cbox.value);
+   
+                         if (cbox.checked && i == -1) {
+                            segments.push(cbox.value);
+   
+                         } else if ( !cbox.checked && i != -1 ) {
+                            segments.splice(i, 1);
+                         }
+   
+                         segments.sort();
+                         wheel.update();
+                      } )
+   
+                 ).append(
+                      $(document.createElement('label')).attr({
+                          'for':  'venue-' + key
+                      })
+                      .text( item )
+                 )
+             )
+         });
+   
+         $('#venues ul>li').tsort("input", {attr: "value"});
+      });
+   </script>
+   <script type=text/javascript>
+   // WHEEL!
+      var wheel = {
+   
+         timerHandle : 0,
+         timerDelay : 33,
+   
+         angleCurrent : 0,
+         angleDelta : 0,
+   
+         size : 290,
+   
+         canvasContext : null,
+   
+         colors : [ '#ffff00', '#ffc700', '#ff9100', '#ff6301', '#ff0000', '#c6037e',
+                    '#713697', '#444ea1', '#2772b2', '#0297ba', '#008e5b', '#8ac819' ],
+   
+         //segments : [ 'Andrew', 'Bob', 'Fred', 'John', 'China', 'Steve', 'Jim', 'Sally', 'Andrew', 'Bob', 'Fred', 'John', 'China', 'Steve', 'Jim'],
+         segments : [],
+   
+         seg_colors : [], // Cache of segments to colors
+         
+         maxSpeed : Math.PI / 16,
+   
+         upTime : 1000, // How long to spin up for (in ms)
+         downTime : 7000, // How long to slow down for (in ms)
+   
+         spinStart : 0,
+   
+         frames : 0,
+   
+         centerX : 500,
+         centerY : 300,
+   
+         spin : function() {
+   
+            // Start the wheel only if it's not already spinning
+            if (wheel.timerHandle == 0) {
+               wheel.spinStart = new Date().getTime();
+               wheel.maxSpeed = Math.PI / (16 + Math.random()); // Randomly vary how hard the spin is
+               wheel.frames = 0;
+               wheel.sound.play();
+   
+               wheel.timerHandle = setInterval(wheel.onTimerTick, wheel.timerDelay);
+            }
+         },
+   
+         onTimerTick : function() {
+   
+            wheel.frames++;
+   
+            wheel.draw();
+   
+            var duration = (new Date().getTime() - wheel.spinStart);
+            var progress = 0;
+            var finished = false;
+   
+            if (duration < wheel.upTime) {
+               progress = duration / wheel.upTime;
+               wheel.angleDelta = wheel.maxSpeed
+                     * Math.sin(progress * Math.PI / 2);
+            } else {
+               progress = duration / wheel.downTime;
+               wheel.angleDelta = wheel.maxSpeed
+                     * Math.sin(progress * Math.PI / 2 + Math.PI / 2);
+               if (progress >= 1)
+                  finished = true;
+            }
+   
+            wheel.angleCurrent += wheel.angleDelta;
+            while (wheel.angleCurrent >= Math.PI * 2)
+               // Keep the angle in a reasonable range
+               wheel.angleCurrent -= Math.PI * 2;
+   
+            if (finished) {
+               clearInterval(wheel.timerHandle);
+               wheel.timerHandle = 0;
+               wheel.angleDelta = 0;
+   
+               $("#counter").html((wheel.frames / duration * 1000) + " FPS");
+            }
+   
+            /*
+            // Display RPM
+            var rpm = (wheel.angleDelta * (1000 / wheel.timerDelay) * 60) / (Math.PI * 2);
+            $("#counter").html( Math.round(rpm) + " RPM" );
+             */
+         },
+   
+         init : function(optionList) {
+            try {
+               wheel.initWheel();
+               wheel.initAudio();
+               wheel.initCanvas();
+               wheel.draw();
+   
+               $.extend(wheel, optionList);
+   
+            } catch (exceptionData) {
+               alert('Wheel is not loaded ' + exceptionData);
+            }
+   
+         },
+   
+         initAudio : function() {
+            var sound = document.createElement('audio');
+            sound.setAttribute('src', 'wheel.mp3');
+            wheel.sound = sound;
+         },
+   
+         initCanvas : function() {
+            var canvas = $('#wheel #canvas').get(0);
+   
+            if ($.browser.msie) {
+               canvas = document.createElement('canvas');
+               $(canvas).attr('width', 1000).attr('height', 600).attr('id', 'canvas').appendTo('.wheel');
+               canvas = G_vmlCanvasManager.initElement(canvas);
+            }
+   
+            canvas.addEventListener("click", wheel.spin, false);
+            wheel.canvasContext = canvas.getContext("2d");
+         },
+   
+         initWheel : function() {
+            shuffle(wheel.colors);
+         },
+   
+         // Called when segments have changed
+         update : function() {
+            // Ensure we start mid way on a item
+            //var r = Math.floor(Math.random() * wheel.segments.length);
+            var r = 0;
+            wheel.angleCurrent = ((r + 0.5) / wheel.segments.length) * Math.PI * 2;
+   
+            var segments = wheel.segments;
+            var len      = segments.length;
+            var colors   = wheel.colors;
+            var colorLen = colors.length;
+   
+            // Generate a color cache (so we have consistant coloring)
+            var seg_color = new Array();
+            for (var i = 0; i < len; i++)
+               seg_color.push( colors [ segments[i].hashCode().mod(colorLen) ] );
+   
+            wheel.seg_color = seg_color;
+   
+            wheel.draw();
+         },
+   
+         draw : function() {
+            wheel.clear();
+            wheel.drawWheel();
+            wheel.drawNeedle();
+         },
+   
+         clear : function() {
+            var ctx = wheel.canvasContext;
+            ctx.clearRect(0, 0, 1000, 800);
+         },
+   
+         drawNeedle : function() {
+            var ctx = wheel.canvasContext;
+            var centerX = wheel.centerX;
+            var centerY = wheel.centerY;
+            var size = wheel.size;
+   
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#000000';
+            ctx.fileStyle = '#ffffff';
+   
+            ctx.beginPath();
+   
+            ctx.moveTo(centerX + size - 40, centerY);
+            ctx.lineTo(centerX + size + 20, centerY - 10);
+            ctx.lineTo(centerX + size + 20, centerY + 10);
+            ctx.closePath();
+   
+            ctx.stroke();
+            ctx.fill();
+   
+            // Which segment is being pointed to?
+            var i = wheel.segments.length - Math.floor((wheel.angleCurrent / (Math.PI * 2))   * wheel.segments.length) - 1;
+   
+            // Now draw the winning name
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = '#000000';
+            ctx.font = "2em Arial";
+            ctx.fillText(wheel.segments[i], centerX + size + 25, centerY);
+         },
+   
+         drawSegment : function(key, lastAngle, angle) {
+            var ctx = wheel.canvasContext;
+            var centerX = wheel.centerX;
+            var centerY = wheel.centerY;
+            var size = wheel.size;
+   
+            var segments = wheel.segments;
+            var len = wheel.segments.length;
+            var colors = wheel.seg_color;
+   
+            var value = segments[key];
+            
+            ctx.save();
+            ctx.beginPath();
+   
+            // Start in the centre
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, size, lastAngle, angle, false); // Draw a arc around the edge
+            ctx.lineTo(centerX, centerY); // Now draw a line back to the centre
+   
+            // Clip anything that follows to this area
+            //ctx.clip(); // It would be best to clip, but we can double performance without it
+            ctx.closePath();
+   
+            ctx.fillStyle = colors[key];
+            ctx.fill();
+            ctx.stroke();
+   
+            // Now draw the text
+            ctx.save(); // The save ensures this works on Android devices
+            ctx.translate(centerX, centerY);
+            ctx.rotate((lastAngle + angle) / 2);
+   
+            ctx.fillStyle = '#000000';
+            ctx.fillText(value.substr(0, 20), size / 2 + 20, 0);
+            ctx.restore();
+   
+            ctx.restore();
+         },
+   
+         drawWheel : function() {
+            var ctx = wheel.canvasContext;
+   
+            var angleCurrent = wheel.angleCurrent;
+            var lastAngle    = angleCurrent;
+   
+            var segments  = wheel.segments;
+            var len       = wheel.segments.length;
+            var colors    = wheel.colors;
+            var colorsLen = wheel.colors.length;
+   
+            var centerX = wheel.centerX;
+            var centerY = wheel.centerY;
+            var size    = wheel.size;
+   
+            var PI2 = Math.PI * 2;
+   
+            ctx.lineWidth    = 1;
+            ctx.strokeStyle  = '#000000';
+            ctx.textBaseline = "middle";
+            ctx.textAlign    = "center";
+            ctx.font         = "1.4em Arial";
+   
+            for (var i = 1; i <= len; i++) {
+               var angle = PI2 * (i / len) + angleCurrent;
+               wheel.drawSegment(i - 1, lastAngle, angle);
+               lastAngle = angle;
+            }
+            // Draw a center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 20, 0, PI2, false);
+            ctx.closePath();
+   
+            ctx.fillStyle   = '#ffffff';
+            ctx.strokeStyle = '#000000';
+            ctx.fill();
+            ctx.stroke();
+   
+            // Draw outer circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, size, 0, PI2, false);
+            ctx.closePath();
+   
+            ctx.lineWidth   = 10;
+            ctx.strokeStyle = '#000000';
+            ctx.stroke();
+         },
+      }
+   
+      window.onload = function() {
+         wheel.init();
+   
+         var segments = new Array();
+         $.each($('#venues input:checked'), function(key, cbox) {
+            segments.push( cbox.value );
+         });
+   
+         wheel.segments = segments;
+         wheel.update();
+   
+         // Hide the address bar (for mobile devices)!
+         setTimeout(function() {
+            window.scrollTo(0, 1);
+         }, 0);
+      }
+   </script>
+   
+       <style>
+         .bd-placeholder-img {
+           font-size: 1.125rem;
+           text-anchor: middle;
+           -webkit-user-select: none;
+           -moz-user-select: none;
+           -ms-user-select: none;
+           user-select: none;
+         }
+   
+         @media (min-width: 768px) {
+           .bd-placeholder-img-lg {
+             font-size: 3.5rem;
+           }
+         }
+       </style>
+       <!-- Custom styles for this template -->
+       <link href="cover.css" rel="stylesheet">
+     </head>
+     <body class="text-center">
+        
+         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white">
+               <h5 class="my-0 mr-md-auto font-weight-normal"></h5>
+               <nav class="my-2 my-md-0 mr-md-3">
+                     {% if user.is_active %}
+                     <div class="btn-group">
+                     <header class="masthead mb-auto">
+                        <a class="btn btn-info text-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <span class="sr-only">Toggle Dropdown</span>
+                        </a>
+                        <div class="dropdown-menu">
+                              <a class="dropdown-item" href="{% url 'usermenu:mylist' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68753687_2331217510432681_1635667844333043712_n.jpg?_nc_cat=102&_nc_oc=AQkvwbvK2QcBdXaw9CGG9MkmszYhiJBm4YvUHM_lAn7afTsD-EOpP7xRiwzDnEy6l5U&_nc_ht=scontent-icn1-1.xx&oh=7cf80264fdb637c9558156dd9f0d246f&oe=5DE03539" width="15">  내가 올린 글</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="{% url 'goodmenu:like_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_eui2=AeFNAcMjMa8j8twPY7ISajZiIr7WiQbGFLg1Ff9vbsZuJmXrT-R14Nb3t9Gh-LoI_OU6Wdfkdj8p5wG1_nR8CmbhtyIibXzhCJdZ4GQBr9Do8A&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=6ad8f6f088f9a1c06ba7b07ea98b6563&oe=5DCE11CA" width="15">  지니</a>
+                              <a class="dropdown-item" href="{% url 'goodmenu:favorite_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68276067_2331208947100204_2071243550384717824_n.jpg?_nc_cat=111&_nc_oc=AQlts9X2m-OP8g1C2p5ZXA0qKnvrGLKD9A_NMuqxL8dq3LrosREb431111bV3cqur1M&_nc_ht=scontent-icn1-1.xx&oh=866b016033719d4f548c6d084219ca26&oe=5D9FFB7D" width="15"> 지니</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="{% url 'usermenu:like_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_eui2=AeFNAcMjMa8j8twPY7ISajZiIr7WiQbGFLg1Ff9vbsZuJmXrT-R14Nb3t9Gh-LoI_OU6Wdfkdj8p5wG1_nR8CmbhtyIibXzhCJdZ4GQBr9Do8A&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=6ad8f6f088f9a1c06ba7b07ea98b6563&oe=5DCE11CA" width="15"> 알라딘</a>
+                              <a class="dropdown-item" href="{% url 'usermenu:favorite_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68276067_2331208947100204_2071243550384717824_n.jpg?_nc_cat=111&_nc_oc=AQlts9X2m-OP8g1C2p5ZXA0qKnvrGLKD9A_NMuqxL8dq3LrosREb431111bV3cqur1M&_nc_ht=scontent-icn1-1.xx&oh=866b016033719d4f548c6d084219ca26&oe=5D9FFB7D" width="15"> 알라딘</a>
+                              <div class="dropdown-divider"></div>
+                                 <a class="dropdown-item" href="{% url 'usermenu:create' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68753687_2331217510432681_1635667844333043712_n.jpg?_nc_cat=102&_nc_oc=AQkvwbvK2QcBdXaw9CGG9MkmszYhiJBm4YvUHM_lAn7afTsD-EOpP7xRiwzDnEy6l5U&_nc_ht=scontent-icn1-1.xx&oh=7cf80264fdb637c9558156dd9f0d246f&oe=5DE03539" width="15">  글쓰기</a>
+                                 <a class="dropdown-item" href="{% url 'password_change' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67937175_2331217583766007_5283682215081803776_n.jpg?_nc_cat=103&_nc_oc=AQkaE_KKJKfwb3hXotYNNvYSsQFonCMRRLauosrI3NoS3y2Wr3wvvaFX0wgDy3SR5NI&_nc_ht=scontent-icn1-1.xx&oh=8703cd64cdf947c39eac476d45f6d0db&oe=5DA1A61D" width="15">  비밀번호 변경</a>
+                              </div>
+                        <a class="btn btn-info text-warning" href="{% url 'logout' %}">Logout</a>
+         
+                     {% else %}
+                     <a class="p-2 text-black-50" href="{% url 'register' %}">회원가입</a>
+                     <a class="btn btn-info text-warning" href="{% url 'login' %}">Login</a>
+                     {% endif %}
+               </nav>
+         </div>
+       <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+       <div class="inner">
+        <a href="{% url 'roulettehome:home'%}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67509336_2325225531031879_8796882694895042560_n.jpg?_nc_cat=100&_nc_oc=AQn-px7v0NVCuS9LYZJkGiALhvyzIYnEot0iRlrC5gMK5N5c0WeQBAi6ChnPlZGdaWM&_nc_ht=scontent-icn1-1.xx&oh=abed837003f78e4c8ce4efed1acc7ab6&oe=5DEDD8DE" width="500" height="200"></a>
+        <nav class="nav nav-masthead justify-content-center bg-info">
+           <a class="nav-link text-warning active" href="{% url 'roulettehome:home'%}">룰렛</a>
+           <a class="nav-link text-warning " href="{% url 'goodmenu:album_list'%}">지니맛집</a>
+             <a class="nav-link text-warning" href="{% url 'usermenu:index'%}">알라딘 맛집</a>
+        </nav>
+       </div>
+     </header>
+   
+       <div class="p-3" id=venues style=float:left ><ul/></div>
+       <div id=wheel>
+       <canvas height=600 id=canvas width=1000></canvas>
+       </div>
+       </body>
+       </div>
+   </html>
+   
+   {%block contents%}
+   
+   
+   {%endblock%}
+     
+      <!--관리자 대화-->
+   
+      <script type="text/javascript">
+         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+         (function(){
+         var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+         s1.async=true;
+         s1.src='https://embed.tawk.to/5d1c7bdf7a48df6da242b996/default';
+         s1.charset='UTF-8';
+         s1.setAttribute('crossorigin','*');
+         s0.parentNode.insertBefore(s1,s0);
+         })();
+         </script>
+       
+         <!--End of Tawk.to Script-->

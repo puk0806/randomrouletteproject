@@ -1,0 +1,30 @@
+
+{% extends 'usermenubase.html' %}
+
+{% block contents %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-12 col-xl-8 col-md-8">
+        <div class="alert alert-primary" role="alert">
+            모든 부분을 다 채워넣어주세요!!
+        </div>
+        <form action="" method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <p>카테고리 {{form.useralbum}} </p>
+            <p>지역 {{form.userarea}} </p>
+            <p>별점 {{form.userstar}} </p>
+            <p>제목 {{form.title}}</p>
+            <p>간략한 내용 {{form.smallbody}}</p>
+            <p>자세한 내용 {{form.body}} </p>
+            <p>섬네일 이미지 {{form.smallimg}} </p>
+            <p>이미지 {{form.detailimg}}</p>
+            <input type="submit" value="Upload" class="btn btn-primary">
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+
+
+
+
+{% endblock%}

@@ -1,0 +1,172 @@
+
+
+  <!doctype html>
+  <html lang="en">
+    <head>
+  
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+      <meta name="generator" content="Jekyll v3.8.5">
+      <title>Cover Template · Bootstrap</title>
+  
+      <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/cover/">
+  
+      <!-- Bootstrap core CSS -->
+  <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  
+  
+  
+  {% load static %}
+  <style>
+    .btn-like{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background:url('../../../static/images/likeimg.png');
+        background-position: -40px 0px;
+        text-indent: -9999px;
+        overflow:hidden;
+        border:none;
+    }
+    .btn-like.active{
+
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background:url('../../../static/images/likeimg.png');
+        background-position: 0px 0px;
+        text-indent: -9999px;
+        overflow:hidden;
+        border:none;
+    }
+     .btn-favorite{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background:url('../../../static/images/likeimg.png');
+        background-position: -80px 0px;
+        text-indent: -9999px;
+        overflow:hidden;
+        border:none;
+    }
+    .btn-favorite.active{
+    display: inline-block;
+        width: 40px;
+        height: 40px;
+        background:url('../../../static/images/likeimg.png');
+        background-position: -120px 0px;
+        text-indent: -9999px;
+        overflow:hidden;
+        border:none;
+    }
+    </style>
+  
+  
+      <style>
+        .bd-placeholder-img {
+          font-size: 1.125rem;
+          text-anchor: middle;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+  
+        @media (min-width: 768px) {
+          .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+          }
+        }
+      </style>
+      
+      <!-- Custom styles for this template -->
+      <link href="cover.css" rel="stylesheet">
+    </head>
+    <body class="text-center">
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white">
+            <h5 class="my-0 mr-md-auto font-weight-normal"></h5>
+            <nav class="my-2 my-md-0 mr-md-3">
+                {% if user.is_active %}
+                <div class="btn-group">
+                    <header class="masthead mb-auto">
+                        <a class="btn btn-info text-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <span class="sr-only">Toggle Dropdown</span>
+                        </a>
+                        <div class="dropdown-menu">
+                           <a class="dropdown-item" href="{% url 'usermenu:mylist' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68753687_2331217510432681_1635667844333043712_n.jpg?_nc_cat=102&_nc_oc=AQkvwbvK2QcBdXaw9CGG9MkmszYhiJBm4YvUHM_lAn7afTsD-EOpP7xRiwzDnEy6l5U&_nc_ht=scontent-icn1-1.xx&oh=7cf80264fdb637c9558156dd9f0d246f&oe=5DE03539" width="15">  내가 올린 글</a>
+                           <div class="dropdown-divider"></div>
+                           <a class="dropdown-item" href="{% url 'goodmenu:like_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_eui2=AeFNAcMjMa8j8twPY7ISajZiIr7WiQbGFLg1Ff9vbsZuJmXrT-R14Nb3t9Gh-LoI_OU6Wdfkdj8p5wG1_nR8CmbhtyIibXzhCJdZ4GQBr9Do8A&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=6ad8f6f088f9a1c06ba7b07ea98b6563&oe=5DCE11CA" width="15">  지니</a>
+                           <a class="dropdown-item" href="{% url 'goodmenu:favorite_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68276067_2331208947100204_2071243550384717824_n.jpg?_nc_cat=111&_nc_oc=AQlts9X2m-OP8g1C2p5ZXA0qKnvrGLKD9A_NMuqxL8dq3LrosREb431111bV3cqur1M&_nc_ht=scontent-icn1-1.xx&oh=866b016033719d4f548c6d084219ca26&oe=5D9FFB7D" width="15"> 지니</a>
+                           <div class="dropdown-divider"></div>
+                           <a class="dropdown-item" href="{% url 'usermenu:like_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_eui2=AeFNAcMjMa8j8twPY7ISajZiIr7WiQbGFLg1Ff9vbsZuJmXrT-R14Nb3t9Gh-LoI_OU6Wdfkdj8p5wG1_nR8CmbhtyIibXzhCJdZ4GQBr9Do8A&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=6ad8f6f088f9a1c06ba7b07ea98b6563&oe=5DCE11CA" width="15"> 알라딘</a>
+                           <a class="dropdown-item" href="{% url 'usermenu:favorite_list' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68276067_2331208947100204_2071243550384717824_n.jpg?_nc_cat=111&_nc_oc=AQlts9X2m-OP8g1C2p5ZXA0qKnvrGLKD9A_NMuqxL8dq3LrosREb431111bV3cqur1M&_nc_ht=scontent-icn1-1.xx&oh=866b016033719d4f548c6d084219ca26&oe=5D9FFB7D" width="15"> 알라딘</a>
+                           <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="{% url 'usermenu:create' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/68753687_2331217510432681_1635667844333043712_n.jpg?_nc_cat=102&_nc_oc=AQkvwbvK2QcBdXaw9CGG9MkmszYhiJBm4YvUHM_lAn7afTsD-EOpP7xRiwzDnEy6l5U&_nc_ht=scontent-icn1-1.xx&oh=7cf80264fdb637c9558156dd9f0d246f&oe=5DE03539" width="15">  글쓰기</a>
+                              <a class="dropdown-item" href="{% url 'password_change' %}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67937175_2331217583766007_5283682215081803776_n.jpg?_nc_cat=103&_nc_oc=AQkaE_KKJKfwb3hXotYNNvYSsQFonCMRRLauosrI3NoS3y2Wr3wvvaFX0wgDy3SR5NI&_nc_ht=scontent-icn1-1.xx&oh=8703cd64cdf947c39eac476d45f6d0db&oe=5DA1A61D" width="15">  비밀번호 변경</a>
+                           </div>
+                        <a class="btn btn-info text-warning" href="{% url 'logout' %}">Logout</a>
+                        
+                     {% else %}
+                     <a class="p-2 text-black-50" href="{% url 'register' %}">회원가입</a>
+                     <a class="btn btn-info text-warning" href="{% url 'login' %}">Login</a>
+                     {% endif %}
+                 </nav>
+           </div>
+           <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column ">
+         <header class="masthead mb-auto">
+           <div class="inner">
+             <a href="{% url 'roulettehome:home'%}"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67509336_2325225531031879_8796882694895042560_n.jpg?_nc_cat=100&_nc_oc=AQn-px7v0NVCuS9LYZJkGiALhvyzIYnEot0iRlrC5gMK5N5c0WeQBAi6ChnPlZGdaWM&_nc_ht=scontent-icn1-1.xx&oh=abed837003f78e4c8ce4efed1acc7ab6&oe=5DEDD8DE" width="500" height="200"></a>
+             <nav class="nav nav-masthead justify-content-center bg-info">
+                 <a class="nav-link text-warning active" href="{% url 'roulettehome:home'%}">룰렛</a>
+                 <a class="nav-link text-warning " href="{% url 'goodmenu:album_list'%}">지니 맛집</a>
+                 <a class="nav-link text-warning" href="{% url 'usermenu:index'%}">알라딘 맛집</a>
+             </nav>
+           </div>
+         </header>
+     
+  </div>
+  </body>
+  </html>
+  <div class='container'>
+    {% if messages %}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            {% for message in messages %}
+            <div class="alert alert-{{message.tag}}">{{message}}</div>
+            {% endfor %}
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+    {% endif %}
+
+  
+  {%block contents%}
+  
+  
+  {%endblock%}
+  
+      
+     <!--관리자 대화-->
+  
+     <script type="text/javascript">
+      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/5d1c7bdf7a48df6da242b996/default';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+      })();
+      </script>
+    
+      <!--End of Tawk.to Script-->

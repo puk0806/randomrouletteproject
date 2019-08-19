@@ -1,0 +1,150 @@
+
+{% extends 'goodmenubase.html' %}
+
+
+{% block title %}goodmenu_detail.html{% endblock %}
+{% load staticfiles %}
+
+{% block contents %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>{{object.title}}</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=ell8frxmkb"></script>
+</head>
+
+<div class="d-flex flex-column flex-md-row align-items-center pt-5 px-md-4 bg-white">
+    <h1 class="my-0 mr-md-auto font-weight-normal"><strong>{{object.title}}<img src="{{ object.goodstar.img.url }}"></strong></h1>
+    <p>
+      <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67758000_2330949910459441_189505085359783936_n.jpg?_nc_cat=100&_nc_oc=AQk0iJa02FeRz4nI6qStucGMFZXCOGzEGtl6idsIt5abaOqBg012XdjpSiK2vItA4Vc&_nc_ht=scontent-icn1-1.xx&oh=ea74dc8d96386e3d0e27a43038f1c5e1&oe=5DCE11CA" width="17" height="17">{{object.like.all.count}}
+      <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67786290_2330946857126413_7937039867257552896_n.jpg?_nc_cat=104&_nc_oc=AQn-7TMkZg0I2NZCpvvA8J4CIzuD8PeSXIOftSsY8UyTNRX1IMrZByj_jHZ-mCfJ0Q0&_nc_ht=scontent-icn1-1.xx&oh=944d5969894ff020a2876c76779cfbc8&oe=5DDECB39" width="25" height="17">{{object.hit}}
+    </p>
+</div>
+<div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+    <p class="my-0 mr-md-auto font-weight-normal"><small>{{goodmenu.smallbody}}</small></p>
+    <p class="text-right my-0 font-weight-normal"><small>게시일 : {{ goodmenu.date }}</small></p>
+</div>
+<div class="d-flex flex-column flex-md-row align-items-center p-5 px-md-4 bg-white">
+    {% for photo in object.photo_set.all %}
+    <!--       
+    {{photo.title}}
+    -->
+    <img src="{{photo.img.url}}" height="300">
+  {% endfor %}
+</div>
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>소개</strong></h6>
+    <p>{{object.body}}</p>  
+</div>
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>전화번호</strong></h6>
+    <p>{{object.phone}}</p>  
+</div>
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>영업시간</strong></h6>
+    <p>{{object.open_time}} ~ {{object.close_time}}</p>
+</div>
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>대표메뉴</strong></h6>
+    <p>{{object.menulist}}</p>
+</div>
+
+<!--
+<h1>body 내용 : {{object.body}}</h1>
+<h1>url : <a href="{{object.url}}">{{object.url}}</a></h1>
+<h1>계시일 : {{object.data}}</h1>
+<h1>오픈시간 : {{object.open_time}}</h1> ~
+<h1>마감시간 : {{object.close_time}}</h1>
+<h1 style="display: none">{{goodmenu.update_counter}}</h1>
+<h1>조회수 : {{object.hit}}</h1>
+<h1>좋아요 : {{object.like.all.count}}</h1>
+<h1>전화 번호 : {{object.phone}}</h1>
+대표 메뉴
+<h1>{{object.menulist}}</h1>
+<h1><img src="{{ object.goodstar.img.url }}"></h1>
+-->
+<div class="pt-3 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>주소</strong></h6>
+    <p>{{goodmenu.area}}</p>
+    <div id="map" style="width:100%;height:300px;"></div>
+</div>
+<div class="pt-5 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>사이트</strong></h6>
+    <p><a class="text-dark" href="{{object.url}}">{{object.url}}</a></p>  
+</div>
+
+<script>
+var mapOptions = {
+    
+    center: new naver.maps.LatLng({{object.mapleft}}, {{object.mapright}}),
+    zoom: 12
+};
+
+var map = new naver.maps.Map('map', mapOptions);
+</script>
+
+
+
+
+              
+
+{% if user.is_active %}
+<h1><a href="{%url 'goodmenu:commentcreate' %}">댓글 쓰기</a></h1>
+
+{% endif %}
+<h1>{{ testdata }}</h1>
+<div class="pt-5 pb-1 px-md-4 text-left">
+    <h6 class="my-0 mr-md-auto pb-2"><strong>댓글</strong></h6>
+</div>
+
+                <table class="table">
+                        <!--
+                        <thead>
+                          <tr>
+                            <th scope="col">작성자</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">내용</th>
+                            <th scope="col">작성일자</th>
+                            <th scope="col">수정</th>
+                          </tr>
+                          
+                        </thead>
+                        -->
+                        {% for comment in object.goodcomment_set.all %}
+                        <tbody>
+                          <th scope="row">
+                            <img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67842302_2331020193785746_5113078967259103232_n.jpg?_nc_cat=100&_nc_eui2=AeFfKozC6VP5EVW-Z94ty2lIwhaQKrJ0fDsXbUt-fXdsNjbILTDPGa7ZKCf-z-S9kKL9EIJqJNsMqSHPpYvJsqzPOTO4spEuFfSsWoicu3_CLA&_nc_oc=AQm0LmtahoIn0EAdGbxBurv-T4IZT9wRUIugHYlKsmVmfPlSww9OibRCCRhmfSmY9p4&_nc_ht=scontent-icn1-1.xx&oh=d62029588ad64f1d4c2b4f67d9896a82&oe=5DD6EEBD" height="50">
+                          </th>
+                            <!--
+                            <td>{{ comment.title }}</td>
+                            -->
+                          <td>
+                            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+                              <p class="my-0 mr-md-auto font-weight-normal"><strong>{{comment.goodauthorcomment}}</strong></p>
+                            </div>
+                            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+                              <p class="my-0 mr-md-auto font-weight-normal"><small><img src="{{ comment.goodstarcomment.img.url }}"></small></p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 bg-white">
+                              <p class="my-0 mr-md-auto font-weight-normal">{{ comment.body }}</p>
+                            </div>
+                          </td>
+                            <td>{{ comment.date }}</td>
+                            <td>
+                            <a href="{% url 'goodmenu:commentupdate' comment.id %}" >수정하기</a>
+                            <a href="{% url 'goodmenu:commentdelete' comment.id %}" >삭제하기</a>
+                            </td>
+                            
+                          </tr>
+                        </tbody>
+                        {% endfor %}
+                      </table>
+
+
+{% endblock%}
+
+

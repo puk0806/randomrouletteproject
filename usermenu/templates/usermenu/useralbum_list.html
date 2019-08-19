@@ -1,0 +1,60 @@
+{% extends 'usermenubase.html' %}
+
+{% block contents %}
+<div class="pt-3 px-md-4 text-right">
+    <a class="text-muted" href="{% url 'usermenu:date' %}"><small>조회수</small></a>
+    <a class="text-muted" href="{% url 'usermenu:index' %}"><small>날짜순</small></a>
+</div>
+        <h1>list</h1>
+                {% for usermenualbum in object_list %}
+                <div class="d-flex flex-column flex-md-row align-items-center pt-3  bg-white">
+                    <h4 class="my-0 mr-md-auto font-weight-normal"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67690951_2331068593780906_5764189657076072448_n.jpg?_nc_cat=102&_nc_eui2=AeG_D0nCF8NOxCd4OL3FwrBcVHAHjv0Y21ryeeAPTgaQUQFOCSIpKGpu1efhOkzC6iztbG2_oFd3Yityja_zNk9n52Xeau5dnfQw8-lJwjlBcw&_nc_oc=AQlUewcQLDJMpc0VjaLpci9HggYw7rNOHituRjlpjEn-UTXDotssofQt6SVY7HA1LHU&_nc_ht=scontent-icn1-1.xx&oh=68cce658ba3ad390f744d045ecdb4154&oe=5DA2224E" height="25">  {{usermenualbum.name}}</h4>
+                </div>
+    
+          <div class="row">
+                {% for usermenu in usermenualbum.usermenu_set.all %}
+
+                <div class="card"  style="margin: 1%; width: 30%; " >
+                    <div class="card-header">
+                        <h3 class="text-info">{{ usermenu.title}}</h3>
+                        <!--
+                        {{ usermenu.userauthor }}
+                        {{ usermenu.userarea }}
+                        {{ usermenu.title}}
+                        {{usermenu.date}}
+                        -->
+                    </div>
+                    <a href="{% url 'usermenu:detail' usermenu.id %}" class="card-link"><img class ="thumbnail" src="{{usermenu.smallimg.thumb_url }}" width="100%"></a>
+                    <div class="p-0 card-body">
+                        <p class="card-text"> {{ usermenu.smallbody }} </p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                            <li>
+                                    <a href="{% url 'usermenu:like' usermenu.id %}" class="float-left btn-like {%if user in usermenu.like.all %} active {%endif%}">좋아요!</a>
+                                    {% if usermenu.like.all.count %}
+                                    <span class = "float-left">
+                                        {{usermenu.like.all.count}}
+                                    </span>
+                                    {% endif %}
+                                    <a href="{% url 'usermenu:favorite' usermenu.id %}" class="float-right btn-favorite {%if user in usermenu.favorite.all %}active{%endif%}">저장하기!</a>
+                                    
+                                </li>
+
+                        <li class="list-group-item">
+                            <small class="text-muted" style="float: left"><img src=" {{ usermenu.userstar.img.url }}" ></small>
+                            <small class="text-muted" style="float: right"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67786290_2330946857126413_7937039867257552896_n.jpg?_nc_cat=104&_nc_oc=AQn-7TMkZg0I2NZCpvvA8J4CIzuD8PeSXIOftSsY8UyTNRX1IMrZByj_jHZ-mCfJ0Q0&_nc_ht=scontent-icn1-1.xx&oh=944d5969894ff020a2876c76779cfbc8&oe=5DDECB39" width="10">{{ usermenu.hit }}</small> 
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="{% url 'usermenu:detail' usermenu.id %}" class="card-link">자세히보기</a>
+                        <a href="{% url 'usermenu:update' usermenu.id %}" class="card-link">수정하기</a>
+                        <a href="{% url 'usermenu:delete' usermenu.id %}" class="card-link">삭제하기</a>
+                    </div>
+    
+                </div>
+                {% endfor %}
+              
+            </div>
+            {%endfor%}
+
+{% endblock%}
