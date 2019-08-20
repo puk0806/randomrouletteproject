@@ -459,6 +459,19 @@
         </nav>
        </div>
      </header>
+     {% if messages %}
+     <div class="row">
+         <div class="col"></div>
+         <div class="col-6">
+             {% for message in messages %}
+             <div class="alert alert-{{message.tag}}">{{message}}</div>
+             {% endfor %}
+         </div>
+         <div class="col"></div>
+     </div>
+ </div>
+     {% endif %}
+
    
        <div class="p-3" id=venues style=float:left ><ul/></div>
        <div id=wheel>

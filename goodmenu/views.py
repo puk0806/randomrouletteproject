@@ -1,5 +1,5 @@
-from django.shortcuts import render,redirect
-
+from django.shortcuts import render,redirect,get_object_or_404
+from .forms import GoodCommentForm
 from .models import Goodmenu,Album,GoodComment
 from django.views.generic import ListView, DetailView,UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -24,19 +24,23 @@ class AlbumList(ListView):
 class AlbumDetail(DetailView):
     model = Album
 
-class GoodmenuDetail(DetailView):
-    model = Goodmenu
+# class GoodmenuDetail(DetailView):
+#    model = Goodmenu
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(GoodmenuDetail, self).get_context_data(*args, **kwargs)
+def goodmenuDetail(request,goodmenu_id):
+    goodmenu_detail = get_object_or_404(Goodmenu,pk=goodmenu_id)
 
-        for key, value in self.request.GET.items():
-            context[key] = value
-        
-        for key, value in self.request.POST.items():
-            context[key] = value
-        
-        return context
+    if request.method == "POST":
+        goodcomment_form=GoodCommentForm(request.POST)
+        goodcomment_form.instance.goodauthorcomment_id = request.user.id
+        goodcomment_form.instance.goodmenucomment_id = goodmenu_id
+        if goodcomment_form.is_valid():
+            goodcomment=goodcomment_form.save()
+    
+    goodcomment_form = GoodCommentForm()
+    goodcomments=goodmenu_detail.goodcomments.all()
+
+    return render(request,'goodmenu/goodmenu_detail.html',{'goodmenu':goodmenu_detail,'goodcomments':goodcomments,'goodcomment_form':goodcomment_form})
 
 
 class GoodMenuLike(View):
@@ -127,13 +131,13 @@ class GoodCommentUpdate(UpdateView):
     fields = ['goodstarcomment','title','body']
     template_name = 'goodmenu/comment_update.html'
     template_name_suffix = '_commentupdate'
-    success_url = '/goodmenu/ablum/'
+    success_url = '/goodmenu/album/'
 
     def dispatch(self, request, *args, **kwargs):
         object = self.get_object()
         if object.goodauthorcomment != request.user:
             messages.warning(request, '수정할 권한이 없습니다.')
-            return HttpResponseRedirect('/goodmenu/album')
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
         else:
             return super(GoodCommentUpdate, self).dispatch(request, *args, **kwargs)
 
@@ -147,6 +151,6 @@ class GoodCommentDelete(DeleteView):
         object = self.get_object()
         if object.goodauthorcomment != request.user:
             messages.warning(request, '삭제할 권한이 없습니다.')
-            return HttpResponseRedirect('/goodmenu/album')
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
         else:
             return super(GoodCommentDelete, self).dispatch(request, *args, **kwargs)

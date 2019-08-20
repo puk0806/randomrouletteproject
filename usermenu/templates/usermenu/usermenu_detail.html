@@ -35,9 +35,6 @@
 </div>
 
 
-<form>
-    
-  </form>
 
                 {% if user.is_active %}
                 <form action="{% url 'usermenu:detail' usermenu.id %}" method="POST" enctype='multipart/form-data'>
@@ -103,8 +100,8 @@
           </td>
             <td>{{ comment.date }}</td>
             <td>
-            <a href="{% url 'goodmenu:commentupdate' comment.id %}" >수정하기</a>
-            <a href="{% url 'goodmenu:commentdelete' comment.id %}" >삭제하기</a>
+            <a href="{% url 'usermenu:commentupdate' comment.id %}" >수정하기</a>
+            <a href="{% url 'usermenu:commentdelete' comment.id %}" >삭제하기</a>
             </td>
             
           </tr>

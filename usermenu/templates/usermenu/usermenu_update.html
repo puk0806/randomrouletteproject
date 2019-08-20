@@ -2,56 +2,29 @@
 {% extends 'base.html' %}
 
 {% block contents %}       
-
-
-
-
-<div class="row"> {% for usermenu in object_list %}
-        {% if usermenu.userauthor == request.user %}
-        <div class="card"  style="margin: 1%; width: 30%; " >
-            <div class="card-header">
-                <h3 class="text-info">{{ usermenu.title}}</h3>
-                <!--
-                {{ usermenu.userauthor }}
-                {{ usermenu.userarea }}
-                {{ usermenu.title}}
-                {{usermenu.date}}
-                -->
+<div class="row">
+        <div class="col"></div>
+        <div class="col-12 col-xl-8 col-md-8">
+            <div class="alert alert-primary" role="alert">
+                모든 부분을 다 채워넣어주세요!!
             </div>
-            <a href="{% url 'usermenu:detail' usermenu.id %}" class="card-link"><img class ="thumbnail" src="{{usermenu.smallimg.thumb_url }}" width="100%"></a>
-            <div class="p-0 card-body">
-                <p class="card-text"> {{ usermenu.smallbody }} </p>
-            </div>
-            <ul class="list-group list-group-flush">
-                    <li>
-                            <a href="{% url 'usermenu:like' usermenu.id %}" class="float-left btn-like {%if user in usermenu.like.all %} active {%endif%}">좋아요!</a>
-                            {% if usermenu.like.all.count %}
-                            <span class = "float-left">
-                                {{usermenu.like.all.count}}
-                            </span>
-                            {% endif %}
-                            <a href="{% url 'usermenu:favorite' usermenu.id %}" class="float-right btn-favorite {%if user in usermenu.favorite.all %}active{%endif%}">저장하기!</a>
-                            
-                        </li>
-
-                <li class="list-group-item">
-                    <small class="text-muted" style="float: left"><img src=" {{ usermenu.userstar.img.url }}" ></small>
-                    <small class="text-muted" style="float: right"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67786290_2330946857126413_7937039867257552896_n.jpg?_nc_cat=104&_nc_oc=AQn-7TMkZg0I2NZCpvvA8J4CIzuD8PeSXIOftSsY8UyTNRX1IMrZByj_jHZ-mCfJ0Q0&_nc_ht=scontent-icn1-1.xx&oh=944d5969894ff020a2876c76779cfbc8&oe=5DDECB39" width="10">{{ usermenu.hit }}</small> 
-                </li>
-            </ul>
-            <div class="card-body">
-                <a href="{% url 'usermenu:detail' usermenu.id %}" class="card-link">자세히보기</a>
-                <a href="{% url 'usermenu:update' usermenu.id %}" class="card-link">수정하기</a>
-                <a href="{% url 'usermenu:delete' usermenu.id %}" class="card-link">삭제하기</a>
-            </div>
-
+            <form action="" method="post" enctype='multipart/form-data'>
+                {% csrf_token %}
+                <p>카테고리 {{form.useralbum}} </p>
+                <p>지역 {{form.userarea}} </p>
+                <p>별점 {{form.userstar}} </p>
+                <p>제목 {{form.title}}</p>
+                <p>간략한 내용 {{form.smallbody}}</p>
+                <p>자세한 내용 {{form.body}} </p>
+                <p>섬네일 이미지 {{form.smallimg}} </p>
+                <p>이미지 {{form.detailimg}}</p>
+                <input type="submit" value="Upload" class="btn btn-primary">
+            </form>
         </div>
-        {% endfor %}
-{% endif %}
-{% endfor %}
-
-</div>
-
+        <div class="col"></div>
+    </div>
+    
+    
 
           
 {% endblock%}

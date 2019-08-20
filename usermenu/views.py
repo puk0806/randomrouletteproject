@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,get_object_or_404,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .forms import CommentForm
 from .models import UserMenu,UserAlbum,UserArea,UserComment
 from django.views.generic import ListView, DetailView,UpdateView, CreateView, DeleteView
@@ -74,11 +74,6 @@ class UserMenuDelete(DeleteView):
             return super(UserMenuDelete, self).dispatch(request, *args, **kwargs)
 
 
-
-#class UserMenuDetail(DetailView):
-#    model = UserMenu
-#    template_name_suffix = '_detail'
-
 def usermenuDetail(request,usermenu_id):
     usermenu_detail=get_object_or_404(UserMenu,pk=usermenu_id)
 
@@ -93,10 +88,6 @@ def usermenuDetail(request,usermenu_id):
     usercomments=usermenu_detail.usercomments.all()
 
     return render(request,'usermenu/usermenu_detail.html',{'usermenu':usermenu_detail,'usercomments':usercomments,'usercomment_form':usercomment_form})
-
-
-
-
 
 
 class UserMenuLike(View):
@@ -207,9 +198,12 @@ class UserCommentUpdate(UpdateView):
         object = self.get_object()
         if object.userauthorcomment != request.user:
             messages.warning(request, '수정할 권한이 없습니다.')
-            return HttpResponseRedirect('/usermenu/')
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
         else:
             return super(UserCommentUpdate, self).dispatch(request, *args, **kwargs)
+
+
+            
 
 class UserCommentDelete(DeleteView):
     model = UserComment
@@ -221,7 +215,7 @@ class UserCommentDelete(DeleteView):
         object = self.get_object()
         if object.userauthorcomment != request.user:
             messages.warning(request, '삭제할 권한이 없습니다.')
-            return HttpResponseRedirect('/usermenu/')
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
         else:
             return super(UserCommentDelete, self).dispatch(request, *args, **kwargs)
 

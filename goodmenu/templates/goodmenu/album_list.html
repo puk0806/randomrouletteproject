@@ -6,6 +6,8 @@
 {% block contents %}
 <h1>선택받은 메뉴  페이지 입니다.</h1>
 
+
+
 {%for album in object_list %}
 <div class="d-flex flex-column flex-md-row align-items-center pt-3  bg-white">
         <h2 class="my-0 mr-md-auto font-weight-normal"><img src="https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/67690951_2331068593780906_5764189657076072448_n.jpg?_nc_cat=102&_nc_eui2=AeG_D0nCF8NOxCd4OL3FwrBcVHAHjv0Y21ryeeAPTgaQUQFOCSIpKGpu1efhOkzC6iztbG2_oFd3Yityja_zNk9n52Xeau5dnfQw8-lJwjlBcw&_nc_oc=AQlUewcQLDJMpc0VjaLpci9HggYw7rNOHituRjlpjEn-UTXDotssofQt6SVY7HA1LHU&_nc_ht=scontent-icn1-1.xx&oh=68cce658ba3ad390f744d045ecdb4154&oe=5DA2224E" height="25"><a class="text-dark" href="{% url 'goodmenu:album_detail' album.id %}"> {{album.name}}</a></h2>

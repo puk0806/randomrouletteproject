@@ -70,7 +70,7 @@ class Goodmenu(models.Model):
         self.save()
 
 class GoodComment(models.Model):
-    goodmenucomment = models.ForeignKey('GoodMenu',on_delete=models.CASCADE)
+    goodmenucomment = models.ForeignKey('GoodMenu',on_delete=models.CASCADE, related_name='goodcomments')
     goodauthorcomment = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goodauthorcomment')
     goodstarcomment = models.ForeignKey('GoodStar',on_delete=models.CASCADE, related_name='goodstarcomment',null=True)
     title = models.CharField(max_length=50)
